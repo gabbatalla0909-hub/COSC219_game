@@ -199,3 +199,13 @@ function revealWord(word, guessedLetters) {
 function hasWon(word, guessedLetters) {
   return !revealWord(word, guessedLetters).includes("_");
 }
+
+
+/*
+1. the game might break when the lives get changed before adding to the guessed letters.
+ The lives should be updated after the guessed letters are updated to avoid losing the game
+ without fully using your lives.
+
+ 2. It is doing unessary work by calling the functions in game.js multiple times if it were 
+ to be called only for the guess input to be invalid.
+*/
