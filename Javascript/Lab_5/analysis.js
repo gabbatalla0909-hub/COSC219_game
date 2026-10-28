@@ -23,13 +23,13 @@
      revealWord("otter", "")      →  "_____"
      revealWord("otter", "ot")    →  "ott__"
      revealWord("otter", "otre")  →  "otter"
-
+ 
    Hint: "otter".split("") gives you an array of letters. Then map, then
    join(""). Three steps.
    ---------------------------------------------------------------------- */
 
 function revealWord(word, guessedLetters) {
-
+  return word.split("").map(letter => guessedLetters.includes(letter) ? letter : "_").join("");
 }
 
 
@@ -44,7 +44,7 @@ function revealWord(word, guessedLetters) {
    ---------------------------------------------------------------------- */
 
 function hasWon(word, guessedLetters) {
-
+  return word.split("").every(letter => guessedLetters.includes(letter));
 }
 
 
