@@ -114,7 +114,7 @@ function sortedByDistance(trails) {
    ---------------------------------------------------------------------- */
 
 function anyClosed(trails) {
-
+  return trails.some(trail => trail.closed);
 }
 
 
@@ -125,7 +125,7 @@ function anyClosed(trails) {
    ---------------------------------------------------------------------- */
 
 function allUnder(trails, limit) {
-
+  return trails.every(trail => trail.km < limit);
 }
 
 
@@ -139,7 +139,8 @@ function allUnder(trails, limit) {
    ---------------------------------------------------------------------- */
 
 function totalDistance(trails) {
-
+  const total = trails.reduce((sum, trail) => sum + trail.km, 0);
+  return Math.round(total * 10) / 10;
 }
 
 
@@ -152,7 +153,7 @@ function totalDistance(trails) {
    ---------------------------------------------------------------------- */
 
 function longestTrail(trails) {
-
+  return trails.reduce((longest, trail) => trail.km > longest.km ? trail : longest, { km: 0 });
 }
 
 
@@ -166,7 +167,10 @@ function longestTrail(trails) {
    ---------------------------------------------------------------------- */
 
 function countByRating(trails) {
-
+  return trails.reduce((counts, trail) => {
+    counts[trail.rating] = (counts[trail.rating] || 0) + 1;
+    return counts;
+  }, {});
 }
 
 
@@ -182,7 +186,7 @@ function countByRating(trails) {
    ---------------------------------------------------------------------- */
 
 function openDistance(trails) {
-
+  return totalDistance(trails.filter(trail => !trail.closed));
 }
 
 
@@ -196,7 +200,10 @@ function openDistance(trails) {
    ---------------------------------------------------------------------- */
 
 function summaryLines(trails) {
-
+  return trails.map(trail => {
+    const closedNote = trail.closed ? " (closed)" : "";
+    return `${trail.name} — ${trail.km} km, ${trail.rating}${closedNote}`;
+  });
 }
 
 
@@ -219,5 +226,14 @@ function summaryLines(trails) {
    ---------------------------------------------------------------------- */
 
 function report(trails) {
-
+  const openTrailsList = openTrails(trails);
+  const longestOpenTrail = longestTrail(openTrailsList);
+  return {
+    total: trails.length,
+    open: openTrailsList.length,
+    closed: trails.length - openTrailsList.length,
+    openKm: totalDistance(openTrailsList),
+    longestOpen: longestOpenTrail ? longestOpenTrail.name : null,
+    byRating: countByRating(trails)
+  };
 }
