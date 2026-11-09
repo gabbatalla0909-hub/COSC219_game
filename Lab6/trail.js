@@ -11,15 +11,20 @@ export class Trail {
 
   /* A truly private field. The # is part of the name; nothing outside this
      class body can read or write it. Start it as false. */
-  // #closed = false;
+   #closed = false;
 
   /* A static property belongs to the CLASS, not to any instance.
      Count how many Trails have been created. */
-  // static count = 0;
+  static count = 0;
 
 
   constructor(name, km, rating, gain) {
     // store the four values on `this`, and increase Trail.count
+    this.name = name;
+    this.km = km;
+    this.rating = rating;
+    this.gain = gain;
+    Trail.count++;
   }
 
 
@@ -32,14 +37,14 @@ export class Trail {
      stored on it.
      ---------------------------------------------------------------- */
   get steepness() {
-
+   return Math.round(this.gain / this.km);
   }
 
 
   /* get isClosed — read the private field.
      This is how the outside world is allowed to see #closed. */
   get isClosed() {
-
+   return this.#closed;
   }
 
 
@@ -48,18 +53,20 @@ export class Trail {
          trail.close().describe()
      ---------------------------------------------------------------- */
   close() {
-
+   this.#closed = true;
+   return this;
   }
 
   open() {
-
+   this.#closed = false;
+   return this;
   }
 
 
   /* describe()  →  "Knox Mountain — 2.8 km, moderate"
      Note the em dash and the comma. Use a template literal. */
   describe() {
-
+   return `${this.name} — ${this.km} km, ${this.rating}`;
   }
 
 
@@ -73,21 +80,26 @@ export class Trail {
          →  { name: "...", km: 2.8, rating: "...", gain: 250, closed: false }
      ---------------------------------------------------------------- */
   toJSON() {
-
-  }
-
-
-  /* static fromObject(obj) — a factory.
-
-     Turn a plain object (say, one that came from JSON) into a real Trail.
-     Destructure the properties out, defaulting gain to 0 if it is missing.
-
-       Trail.fromObject({ name: "Z", km: 3, rating: "easy" }).gain  →  0
-     ---------------------------------------------------------------- */
-  static fromObject(obj) {
-
-  }
-}
+   return{
+      name: this.name,
+      km: this.km,
+      rating: this.rating,
+      gain: this.gain,
+      closed: this.#closed
+   };
+     }
+   
+     /* static fromObject(obj) — a factory.
+  
+        Turn a plain object (say, one that came from JSON) into a real Trail.
+        Destructure the properties out, defaulting gain to 0 if it is missing.
+  
+          Trail.fromObject({ name: "Z", km: 3, rating: "easy" }).gain  →  0
+        ---------------------------------------------------------------- */
+     static fromObject({name: trailName, km, rating, gain = 0}) {
+      return new Trail(trailName, km, rating, gain);
+     }
+   }
 
 
 export class BikeTrail extends Trail {
@@ -99,7 +111,8 @@ export class BikeTrail extends Trail {
      because the instance does not exist yet.
      ---------------------------------------------------------------- */
   constructor(name, km, rating, gain, surface) {
-
+   super(name, km, rating, gain);
+   this.surface = surface ?? "gravel";
   }
 
 
@@ -110,13 +123,13 @@ export class BikeTrail extends Trail {
      super.describe() gives you the first part.
      ---------------------------------------------------------------- */
   describe() {
-
+   return `${super.describe()} — ${this.surface}`;
   }
 
 
   /* toJSON() — everything the parent returns, plus surface.
      Spread super.toJSON() rather than listing the fields again. */
   toJSON() {
-
+   return { ...super.toJSON(), surface: this.surface };
   }
 }
