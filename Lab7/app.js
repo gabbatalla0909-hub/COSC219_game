@@ -39,3 +39,44 @@
 
 
 /* The Clear all button: empty the array, clear storage, update. */
+const form = document.querySelector("#add-trail");
+const list = document.querySelector("#trail-list");
+const error = document.querySelector("#error");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = form.elements.name.value.trim();
+  const km = parseFloat(form.elements.km.value);
+ 
+  if (isNaN(km) || km <= 0) {
+    error.textContent = "Distance must be a positive number";
+    form.elements.km.focus();
+    return;
+  }
+  error.textContent = "";
+  trails.push({ id: Date.now().toString(), name, km, isOpen: true });
+  form.reset();
+  update();
+});
+
+list.addEventListener("click", (event) => {
+  error.textContent = "";
+  const action = findAction(event.target);
+  if (!action) return;
+  const id = action.closest(".trail").dataset.id;
+  if (action.dataset.action === "toggle") {
+    const trail = trails.find(t => t.id === id);
+    trail.isOpen = !trail.isOpen;
+  } else if (action.dataset.action === "delete") {
+    const index = trails.findIndex(t => t.id === id);
+    trails.splice(index, 1);
+  }
+  update();
+});
+
+document.querySelector("#clear-all").addEventListener("click", () => {
+  trails.length = 0;
+  update();
+});
+
+update();
