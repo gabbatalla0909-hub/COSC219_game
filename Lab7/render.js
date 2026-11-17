@@ -35,7 +35,48 @@
    ---------------------------------------------------------------------- */
 
 export function createTrailItem(trail) {
+  const li = document.createElement("li");
+  li.classList.add("trail");
+  li.dataset.id = trail.id;
 
+  if (!trail.isOpen) {
+    li.classList.add("is-closed");
+  }
+
+  const nameSpan = document.createElement("span");
+  nameSpan.classList.add("trail-name");
+  nameSpan.textContent = trail.name;
+  li.appendChild(nameSpan);
+
+  const kmSpan = document.createElement("span");
+  kmSpan.classList.add("trail-km");
+  kmSpan.textContent = `${trail.km} km`;
+  li.appendChild(kmSpan);
+
+  const toggleButton = document.createElement("button");
+  toggleButton.type = "button";
+  toggleButton.dataset.action = "toggle";
+  
+  const toggleLabel = document.createElement("span");
+  toggleLabel.classList.add("btn-label");
+  toggleLabel.textContent = trail.isOpen ? "Close" : "Reopen";
+  
+  toggleButton.appendChild(toggleLabel);
+  li.appendChild(toggleButton);
+
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.dataset.action = "delete";
+  deleteButton.setAttribute("aria-label", `Delete ${trail.name}`);
+  
+  const deleteLabel = document.createElement("span");
+  deleteLabel.classList.add("btn-label");
+  deleteLabel.textContent = "Delete";
+  
+  deleteButton.appendChild(deleteLabel);
+  li.appendChild(deleteButton);
+
+  return li;
 }
 
 
@@ -46,7 +87,7 @@ export function createTrailItem(trail) {
    ---------------------------------------------------------------------- */
 
 export function renderTrails(trails, container) {
-
+container.replaceChildren(...trails.map(createTrailItem));
 }
 
 
@@ -60,5 +101,15 @@ export function renderTrails(trails, container) {
    ---------------------------------------------------------------------- */
 
 export function summaryText(trails) {
+  if (trails.length === 0) {
+    return "No trails yet. Add one above.";
+  }
 
+  const openCount = trails.filter(trail => trail.isOpen).length;
+  const totalKm = trails.reduce((sum, trail) => sum + trail.km, 0).toFixed(1);
+
+  const trailWord = trails.length === 1 ? "trail" : "trails";
+  const openWord = openCount === 1 ? "open" : "open";
+
+  return `${trails.length} ${trailWord}, ${openCount} ${openWord}, ${totalKm} km total.`;
 }
