@@ -8,6 +8,7 @@
 
 import { TRAILS } from "./data.js";
 
+
 const results = document.querySelector("#results");
 const count = document.querySelector("#count");
 const form = document.querySelector("#controls");
@@ -15,13 +16,13 @@ const form = document.querySelector("#controls");
 
 export function matches(trail, search, rating) {
   const bySearch = trail.name.toLowerCase().includes(search.toLowerCase());
-  const byRating = rating == "all" || trail.rating == rating;
+  const byRating = rating === "all" || trail.rating === rating;
   return bySearch && byRating;
 }
 
 
 export function sortByDistance(trails) {
-  return trails.sort();
+  return [...trails].sort((a, b) => a.km - b.km);
 }
 
 
@@ -31,9 +32,15 @@ export function render(trails) {
   trails.forEach((trail) => {
     const li = document.createElement("li");
     li.className = "trail";
-    li.innerHTML =
-      '<span class="trail-name">' + trail.name + '</span>' +
-      '<span class="trail-km">' + trail.km + ' km</span>';
+    
+    const name = document.createElement("span");
+    name.className = "name";
+    name.textContent = trail.name;
+
+    const km = document.createElement("span");
+    km.className = "km";
+    km.textContent = trail.km + " km";
+    li.append(name, km);
     results.append(li);
   });
 
@@ -50,9 +57,9 @@ function apply() {
 }
 
 
-form.addEventListener("submit", () => {
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
   apply();
 });
-
 
 apply();
