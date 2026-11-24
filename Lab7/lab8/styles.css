@@ -1,5 +1,7 @@
 /* Trail Browser — needs fixing */
 
+*, *::before, *::after { box-sizing: border-box; }
+
 :root {
   --brand: #1b7f5a;
   --ink:   #12181f;
@@ -55,7 +57,8 @@ button {
 input:focus,
 select:focus,
 button:focus {
-  outline: none;
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
 }
 
 #count { color: var(--muted); }
